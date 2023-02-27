@@ -13,7 +13,6 @@ namespace Automation
             try
             {
                 IParser parser = new JobParser(auth_file, keywords_buffer, country_code, deliverable_messages[0], deliverable_messages[1], timeout, headless);
-
                 await parser.Parse(credentials[0], credentials[1]);
             }
             catch (Exception)
