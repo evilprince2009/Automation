@@ -4,7 +4,7 @@ namespace Automation.Helpers
 {
     internal class JsonToOtherFormats
     {
-        private JsonToOtherFormats() {}
+        private JsonToOtherFormats() { }
         public static List<string> Keywords(string params_file)
         {
             List<string> keywords_list = new();
@@ -44,7 +44,7 @@ namespace Automation.Helpers
         {
             const string json_label = "{}";
             DocumentPrototype.CreateRoot(log_destination, json_label);
-            foreach(string file in files)
+            foreach (string file in files)
             {
                 using StreamReader json_reader = new(file);
                 string json_data = json_reader.ReadToEnd();
@@ -69,7 +69,7 @@ namespace Automation.Helpers
                         {
                             string ceo_value = single_json.GetValue("ceo_linkedin")!.ToString();
 
-                            if(ceo_value != "N/A")
+                            if (ceo_value != "N/A")
                             {
                                 unique_container.Add(ceo_value);
                             }
@@ -137,16 +137,7 @@ namespace Automation.Helpers
             JObject params_object = JObject.Parse(param_reader.ReadToEnd());
             param_reader.Dispose();
 
-            return params_object.ContainsKey("keywords")
-                && params_object.ContainsKey("invitation_message")
-                && params_object.ContainsKey("followup_message")
-                && params_object.ContainsKey("search_type")
-                && params_object.ContainsKey("location")
-                && params_object.GetValue("keywords")!.ToList().Count > 0
-                && !string.IsNullOrWhiteSpace(params_object.GetValue("invitation_message")!.ToString())
-                && !string.IsNullOrWhiteSpace(params_object.GetValue("followup_message")!.ToString())
-                && !string.IsNullOrWhiteSpace(params_object.GetValue("search_type")!.ToString())
-                && !string.IsNullOrWhiteSpace(params_object.GetValue("location")!.ToString());
+            return EvaluateFields(params_object);
         }
         public static void ConvertToCSV(string json_source, string csv_destination, string csv_label)
         {
@@ -179,6 +170,20 @@ namespace Automation.Helpers
                     WriteFile(csv_destination, single_row);
                 }
             }
+        }
+
+        private static bool EvaluateFields(JObject params_object)
+        {
+            return params_object.ContainsKey("keywords")
+                && params_object.ContainsKey("invitation_message")
+                && params_object.ContainsKey("followup_message")
+                && params_object.ContainsKey("search_type")
+                && params_object.ContainsKey("location")
+                && params_object.GetValue("keywords")!.ToList().Count > 0
+                && !string.IsNullOrWhiteSpace(params_object.GetValue("invitation_message")!.ToString())
+                && !string.IsNullOrWhiteSpace(params_object.GetValue("followup_message")!.ToString())
+                && !string.IsNullOrWhiteSpace(params_object.GetValue("search_type")!.ToString())
+                && !string.IsNullOrWhiteSpace(params_object.GetValue("location")!.ToString());
         }
 
         private static void WriteFile(string destination, string data)
